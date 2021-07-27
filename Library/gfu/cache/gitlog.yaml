@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 61
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -530159753, guid: 68c7e4565cde54155bb78d8e935f1ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cacheType: 3
+  lastUpdatedAtString: 2021-07-27T17:52:37.986+02:00
+  initializedAtString: 2021-07-27T17:52:37.986+02:00
+  log:
+  - commitID: 25a59f7f4d888e8f5f2f7515cc70ba542a5deec5
+    mergeA: 
+    mergeB: 
+    authorName: SimonGoBrrr
+    authorEmail: simonthedankone@gmail.com
+    commitEmail: simonthedankone@gmail.com
+    commitName: SimonGoBrrr
+    summary: Revert "Initial commit"
+    description: This reverts commit fbd02968b1f270424d76415fd98018f016628988.
+    timeString: 2021-07-26T20:40:13.000+02:00
+    commitTimeString: 2021-07-26T20:40:13.000+02:00
+    changes:
+    - path: .gitattributes
+      fullPath: C:\Users\are_o\Desktop\ZolarGium\ZolarGium\.gitattributes
+      projectPath: .gitattributes
+      originalPath: 
+      indexStatus: 5
+      workTreeStatus: 0
+    - path: .gitignore
+      fullPath: C:\Users\are_o\Desktop\ZolarGium\ZolarGium\.gitignore
+      projectPath: .gitignore
+      originalPath: 
+      indexStatus: 5
+      workTreeStatus: 0
+    - path: Assets\.gitignore
+      fullPath: C:\Users\are_o\Desktop\ZolarGium\ZolarGium\Assets\.gitignore
+      projectPath: Assets\.gitignore
+      originalPath: 
+      indexStatus: 5
+      workTreeStatus: 0
+  - commitID: fbd02968b1f270424d76415fd98018f016628988
+    mergeA: 
+    mergeB: 
+    authorName: Simonbrown
+    authorEmail: simonthecsharpcoder@gmail.com
+    commitEmail: simonthecsharpcoder@gmail.com
+    commitName: Simonbrown
+    summary: Initial commit
+    description: 
+    timeString: 2021-07-26T20:38:52.000+02:00
+    commitTimeString: 2021-07-26T20:38:52.000+02:00
+    changes:
+    - path: .gitattributes
+      fullPath: C:\Users\are_o\Desktop\ZolarGium\ZolarGium\.gitattributes
+      projectPath: .gitattributes
+      originalPath: 
+      indexStatus: 4
+      workTreeStatus: 0
+    - path: .gitignore
+      fullPath: C:\Users\are_o\Desktop\ZolarGium\ZolarGium\.gitignore
+      projectPath: .gitignore
+      originalPath: 
+      indexStatus: 4
+      workTreeStatus: 0
+    - path: Assets\.gitignore
+      fullPath: C:\Users\are_o\Desktop\ZolarGium\ZolarGium\Assets\.gitignore
+      projectPath: Assets\.gitignore
+      originalPath: 
+      indexStatus: 4
+      workTreeStatus: 0
