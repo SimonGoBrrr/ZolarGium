@@ -20,13 +20,8 @@ public class Blackhole : Gravity
         if(checkSphere != null){
             foreach(Collider i in checkSphere){
                 float distance = (rb.position - i.transform.position).magnitude;
-                i.transform.localScale = i.transform.localScale * distance/checkSphereRadius;
-                //IF PLANET (I) LOCALSCALE <= BLACKHOLE LOCALSCALE. PROBLEM FLOATING POINT ERROR.
-                // if(i.transform.localScale <= rb.transform.localScale){
-                //     rb.mass+=i.gameObject.GetComponent<Gravity>().mass;
-                //     Destroy(i);
-                //     //Change size of blackhole to visually grow bigger.
-                // }
+                i.transform.localScale *= distance/checkSphereRadius;
+                //If i transform localScale is lower than transform blackhole * 0,5.
             }
         }
     }

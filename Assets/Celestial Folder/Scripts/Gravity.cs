@@ -7,7 +7,6 @@ public class Gravity : MonoBehaviour
 {
     public static List<Gravity> gravityObjects;
     public float mass = 100f;
-    public const float G = 10f;
     public Rigidbody rb;
     public Vector3 initalVelocity = new Vector3(0,0,0);
     public float RotationalX, RotationalY = 0;
