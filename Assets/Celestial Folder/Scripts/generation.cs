@@ -15,24 +15,44 @@ public class generation : MonoBehaviour
         float abc = ab + bc + ac + ba + cb + ca;
         return abc / 6f;
     }
-
-    public float[,,] GenerateNoiseMap(Vector3 size, float noiseScale, float seed){
-        float[,,] noiseMap = new float[(int)size.x+1,(int)size.y+1,(int)size.z+1];
-        for(int x = 0; x < size.x+ 1; x++){
-            for(int y = 0; y < size.y+ 1; y++){
-                for(int z = 0; z < size.z+ 1; z++){
-                    //If at border, basically stops it from being transparent at the sides of the whole cube.
-                    if(x == 0 || y == 0 || z == 0 || x == size.x || y == size.y || z == size.z){
-                        noiseMap[x,y,z] = 0;
-                    } 
-                    else {
-                        float noise = Perlin3D(x * noiseScale,y * noiseScale,z * noiseScale, seed);
-                        noiseMap[x,y,z] = noise;
+    public float[,,] GenerateNoiseMap(int size, int numLayers, float noiseScale, float noiseHeightMultiplier, float seed){
+        float[,,] noiseMap = new float[size+1,size+1,size+1];
+        for(int x = 0; x < size+ 1; x++){
+            for(int y = 0; y < size+ 1; y++){
+                for(int z = 0; z < size+ 1; z++){
+                    Vector3 position = new Vector3(x,y,z);
+                    float planetRadius = size/3;
+                    Vector3 centreCelestialObject = new Vector3(size/2, size/2, size/2);
+                    float distanceFromWorldCentre = Vector3.Distance(position, centreCelestialObject);
+                    float mapValue = distanceFromWorldCentre - planetRadius;
+                    float frequency = noiseScale;
+                    float amplitude = noiseHeightMultiplier;
+                    for(int i = 0; i < numLayers; i++){
+                        mapValue+=Perlin3D(x*frequency,y*frequency,z*frequency, seed) * amplitude;
+                        //Can change to individually change each perlin noise layer.
+                        frequency*=2f;
+                        amplitude*=0.5f;
                     }
+                    noiseMap[x,y,z] = -mapValue;
+
                 }
             }
         }
         return noiseMap;
+    }
+
+
+
+    
+    //Calculate the midpoint on the edge to better represent the surfaceLevel.
+    public static Vector3 calculateVertexMidPoint(Vector3Int cordA, Vector3Int cordb, float[,,] noiseMap, float surfaceLevel){
+        float valueA = noiseMap[cordA.x,cordA.y,cordA.z];
+        float valueB = noiseMap[cordb.x,cordb.y,cordb.z];
+        float t = (surfaceLevel - valueA) / (valueB - valueA);
+        Vector3 cordAFloat = cordA;
+        Vector3 cordBFloat = cordb;
+        Vector3 vertexMidPoint = cordAFloat + t * (cordBFloat - cordAFloat);
+        return vertexMidPoint;
     }
     //Star with corner 7 in cube array.
     int GetMarchCubeIndex(float[] cube, float surfaceLevel){
@@ -45,19 +65,19 @@ public class generation : MonoBehaviour
         return index;
     }
 
-    public Mesh createMesh(Vector3 size, float surfaceLevel, float noiseScale, float seed){
+    public Mesh createMesh(int size, float surfaceLevel, float noiseScale, float noiseHeightMultiplier, float seed, int numLayers){
         Mesh mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
-        float[,,] noiseMap = GenerateNoiseMap(size, noiseScale, seed);
-        for(int x = 0; x < size.x; x++){
-            for(int y = 0; y < size.y; y++){
-                for(int z = 0; z < size.z; z++){
-                    Vector3 position = new Vector3(x,y,z);
+        float[,,] noiseMap = GenerateNoiseMap(size, numLayers, noiseScale, noiseHeightMultiplier, seed);
+        for(int x = 0; x < size; x++){
+            for(int y = 0; y < size; y++){
+                for(int z = 0; z < size; z++){
+                    Vector3Int position = new Vector3Int(x,y,z);
                     float[] cube = new float[8];
                     for(int i = 0; i < 8; i++){
-                        Vector3 currentPosition = position+CornerTable[i];
+                        Vector3Int currentPosition = position+CornerTable[i];
                         float currentValue = noiseMap[(int)currentPosition.x,(int)currentPosition.y,(int)currentPosition.z];
                         cube[i] = currentValue;
                     }
@@ -72,9 +92,9 @@ public class generation : MonoBehaviour
                             if(rowIndex == -1){
                                 continue;
                             }
-                            Vector3 vert1 = position + EdgeTable[rowIndex, 0];
-                            Vector3 vert2 = position + EdgeTable[rowIndex, 1];
-                            Vector3 vertMidPoint = (vert1+vert2)/2f;
+                            Vector3Int vert1 = position + EdgeTable[rowIndex, 0];
+                            Vector3Int vert2 = position + EdgeTable[rowIndex, 1];
+                            Vector3 vertMidPoint = calculateVertexMidPoint(vert1, vert2, noiseMap, surfaceLevel);
                             vertices.Add(vertMidPoint);
                             triangles.Add(vertices.Count -1);
                             edgeIndex++;
@@ -99,20 +119,20 @@ public class generation : MonoBehaviour
         new Vector3Int(1, 1, 1),
         new Vector3Int(0, 1, 1)
     };
-    Vector3[,] EdgeTable = new Vector3[12, 2] {
+    Vector3Int[,] EdgeTable = new Vector3Int[12, 2] {
 
-        { new Vector3(0.0f, 0.0f, 0.0f), new Vector3(1.0f, 0.0f, 0.0f) },
-        { new Vector3(1.0f, 0.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f) },
-        { new Vector3(0.0f, 1.0f, 0.0f), new Vector3(1.0f, 1.0f, 0.0f) },
-        { new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 1.0f, 0.0f) },
-        { new Vector3(0.0f, 0.0f, 1.0f), new Vector3(1.0f, 0.0f, 1.0f) },
-        { new Vector3(1.0f, 0.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f) },
-        { new Vector3(0.0f, 1.0f, 1.0f), new Vector3(1.0f, 1.0f, 1.0f) },
-        { new Vector3(0.0f, 0.0f, 1.0f), new Vector3(0.0f, 1.0f, 1.0f) },
-        { new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 1.0f) },
-        { new Vector3(1.0f, 0.0f, 0.0f), new Vector3(1.0f, 0.0f, 1.0f) },
-        { new Vector3(1.0f, 1.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f) },
-        { new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 1.0f, 1.0f) }
+        { new Vector3Int(0, 0, 0), new Vector3Int(1, 0, 0) },
+        { new Vector3Int(1, 0, 0), new Vector3Int(1, 1, 0) },
+        { new Vector3Int(0, 1, 0), new Vector3Int(1, 1, 0) },
+        { new Vector3Int(0, 0, 0), new Vector3Int(0, 1, 0) },
+        { new Vector3Int(0, 0, 1), new Vector3Int(1, 0, 1) },
+        { new Vector3Int(1, 0, 1), new Vector3Int(1, 1, 1) },
+        { new Vector3Int(0, 1, 1), new Vector3Int(1, 1, 1) },
+        { new Vector3Int(0, 0, 1), new Vector3Int(0, 1, 1) },
+        { new Vector3Int(0, 0, 0), new Vector3Int(0, 0, 1) },
+        { new Vector3Int(1, 0, 0), new Vector3Int(1, 0, 1) },
+        { new Vector3Int(1, 1, 0), new Vector3Int(1, 1, 1) },
+        { new Vector3Int(0, 1, 0), new Vector3Int(0, 1, 1) }
     };
 
     //<summary>
