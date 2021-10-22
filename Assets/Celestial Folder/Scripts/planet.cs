@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class planet : generation
 {
-    [SerializeField]
-    private int size = 10;
+    public int size = 10;
     [SerializeField]
     private float noiseScale = 0.975f;
     [SerializeField]
@@ -20,9 +19,9 @@ public class planet : generation
 
     void Start(){
         var objectMesh = GetComponent<MeshFilter>();
-        var meshCollider = GetComponent<MeshCollider>();
+        //var meshCollider = GetComponent<MeshCollider>();
         Mesh marchMesh = createMesh(size, surfaceLevel, noiseScale, noiseHeightMultiplier, seed, numLayers);
         objectMesh.mesh = marchMesh;
-        meshCollider.sharedMesh = marchMesh;
+        //meshCollider.sharedMesh = marchMesh;
     }
 }
