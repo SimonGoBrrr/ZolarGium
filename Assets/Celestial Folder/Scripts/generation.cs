@@ -54,12 +54,13 @@ public class generation : MonoBehaviour
         Vector3 vertexMidPoint = cordAFloat + t * (cordBFloat - cordAFloat);
         return vertexMidPoint;
     }
-    //Star with corner 7 in cube array.
+    //Start with corner 7 in cube array.
+    //Problem all cube configs are 255, becuase the cubes are always below the surfacelevel somehow.
     int GetMarchCubeIndex(float[] cube, float surfaceLevel){
         int index = 0;
         for(int i = 0; i < 8; i++){
             if(cube[i] < surfaceLevel){
-                index |= 1 << i;
+                index |= (1 << i);
             }
         }
         return index;
@@ -95,7 +96,9 @@ public class generation : MonoBehaviour
                             Vector3Int vert1 = position + EdgeTable[rowIndex, 0];
                             Vector3Int vert2 = position + EdgeTable[rowIndex, 1];
                             Vector3 vertMidPoint = calculateVertexMidPoint(vert1, vert2, noiseMap, surfaceLevel);
+                            //Ingen vertices eller triangles blir addet til listane?????
                             vertices.Add(vertMidPoint);
+                            //Add sånn at ann kan igjenbruke gammle vertices points. Det var ein for loop.
                             triangles.Add(vertices.Count -1);
                             edgeIndex++;
                         }
