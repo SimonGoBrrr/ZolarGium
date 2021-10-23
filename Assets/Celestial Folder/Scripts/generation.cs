@@ -21,7 +21,7 @@ public class generation : MonoBehaviour
             for(int y = 0; y < size+ 1; y++){
                 for(int z = 0; z < size+ 1; z++){
                     Vector3 position = new Vector3(x,y,z);
-                    float planetRadius = size/3;
+                    float planetRadius = size/2.1f;
                     Vector3 centreCelestialObject = new Vector3(size/2, size/2, size/2);
                     float distanceFromWorldCentre = Vector3.Distance(position, centreCelestialObject);
                     float mapValue = distanceFromWorldCentre - planetRadius;
@@ -33,7 +33,7 @@ public class generation : MonoBehaviour
                         frequency*=2f;
                         amplitude*=0.5f;
                     }
-                    noiseMap[x,y,z] = -mapValue;
+                    noiseMap[x,y,z] = mapValue;
 
                 }
             }
@@ -59,8 +59,8 @@ public class generation : MonoBehaviour
     int GetMarchCubeIndex(float[] cube, float surfaceLevel){
         int index = 0;
         for(int i = 0; i < 8; i++){
-            if(cube[i] < surfaceLevel){
-                index |= (1 << i);
+            if(cube[i] > surfaceLevel){
+                index |= 1 << i;
             }
         }
         return index;

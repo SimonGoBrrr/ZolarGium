@@ -10,6 +10,7 @@ public class Trajectoryprediction : MonoBehaviour
     public float lineEndWidth = 0.3f;
     public bool draw = false;
     public float timeStep = 0.01f;
+
     void Update()
     {
         if(draw == true) {
@@ -29,7 +30,7 @@ public class Trajectoryprediction : MonoBehaviour
                     Rigidbody gravityobjectrb = gravityobject.gameObject.GetComponent<Rigidbody>();
                     LineRenderer gravityobjectlr = gravityobject.gameObject.GetComponent<LineRenderer>();
                     Vector3 pos = new Vector3(gravityobject.gameObject.GetComponent<planet>().size/2, gravityobject.gameObject.GetComponent<planet>().size/2, gravityobject.gameObject.GetComponent<planet>().size/2)+ gravityobject.gameObject.transform.position;
-                    SimulatedBody s = new SimulatedBody(gravityobjectrb, gravityobject.initalVelocity , gravityobject.mass, gravityobjectlr, pos);
+                    SimulatedBody s = new SimulatedBody(gravityobjectrb, gravityobject.initalVelocity, gravityobject.mass, gravityobjectlr, pos);
                     bodies.Add(s);
                 }
                 //Go through each iterations
