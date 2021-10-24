@@ -104,6 +104,7 @@ public class generation : MonoBehaviour
                                 {
                                     triangles.Add(l);
                                     inlist = true;
+                                    break;
                                 }
                             }
                             if(inlist == false){

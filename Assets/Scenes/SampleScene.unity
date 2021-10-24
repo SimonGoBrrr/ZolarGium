@@ -459,12 +459,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c281901ac493244d580aa2ac21c4172f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 50
+  size: 75
   noiseScale: 0.125
-  noiseHeightMultiplier: 10
+  noiseHeightMultiplier: 15.38
   surfaceLevel: 0.75
-  seed: 0
-  numLayers: 5
+  seed: 203
+  numLayers: 15
 --- !u!4 &1895670383
 Transform:
   m_ObjectHideFlags: 0
