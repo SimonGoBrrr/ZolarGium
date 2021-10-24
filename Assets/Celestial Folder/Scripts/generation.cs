@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +21,7 @@ public class generation : MonoBehaviour
             for(int y = 0; y < size+ 1; y++){
                 for(int z = 0; z < size+ 1; z++){
                     Vector3 position = new Vector3(x,y,z);
+                    //Everything over 2 results in the "sides" of the sphere not disseapering! Because the perlin noise is digging into the sphere not extruding out!
                     float planetRadius = size/2.1f;
                     Vector3 centreCelestialObject = new Vector3(size/2, size/2, size/2);
                     float distanceFromWorldCentre = Vector3.Distance(position, centreCelestialObject);
@@ -96,10 +97,19 @@ public class generation : MonoBehaviour
                             Vector3Int vert1 = position + EdgeTable[rowIndex, 0];
                             Vector3Int vert2 = position + EdgeTable[rowIndex, 1];
                             Vector3 vertMidPoint = calculateVertexMidPoint(vert1, vert2, noiseMap, surfaceLevel);
-                            //Ingen vertices eller triangles blir addet til listane?????
-                            vertices.Add(vertMidPoint);
-                            //Add sånn at ann kan igjenbruke gammle vertices points. Det var ein for loop.
-                            triangles.Add(vertices.Count -1);
+                            bool inlist = false;
+                            for(int l = 0; l < vertices.Count; l++)
+                            {
+                                if(vertMidPoint == vertices[l])
+                                {
+                                    triangles.Add(l);
+                                    inlist = true;
+                                }
+                            }
+                            if(inlist == false){
+                                vertices.Add(vertMidPoint);
+                                triangles.Add(vertices.Count-1);
+                            }
                             edgeIndex++;
                         }
                     }
