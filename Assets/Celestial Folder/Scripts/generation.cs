@@ -24,8 +24,8 @@ public class generation : MonoBehaviour
                     //Everything over 2 results in the "sides" of the sphere not disseapering! Because the perlin noise is digging into the sphere not extruding out!
                     float planetRadius = size/2.1f;
                     Vector3 centreCelestialObject = new Vector3(size/2, size/2, size/2);
-                    float distanceFromWorldCentre = Vector3.Distance(position, centreCelestialObject);
-                    float mapValue = distanceFromWorldCentre - planetRadius;
+                    float distanceFromCentre = Vector3.Distance(position, centreCelestialObject);
+                    float mapValue = distanceFromCentre - planetRadius;
                     float frequency = noiseScale;
                     float amplitude = noiseHeightMultiplier;
                     for(int i = 0; i < numLayers; i++){
@@ -94,9 +94,11 @@ public class generation : MonoBehaviour
                             if(rowIndex == -1){
                                 continue;
                             }
+                            //Add so that the vertices position's centre is at the gameobject's position. Fixes alot of furture problems.
                             Vector3Int vert1 = position + EdgeTable[rowIndex, 0];
                             Vector3Int vert2 = position + EdgeTable[rowIndex, 1];
-                            Vector3 vertMidPoint = calculateVertexMidPoint(vert1, vert2, noiseMap, surfaceLevel);
+                            //- new vector(size/2, size/2, size/2) to offset it to be in the centre of gameobject.
+                            Vector3 vertMidPoint = calculateVertexMidPoint(vert1, vert2, noiseMap, surfaceLevel) - new Vector3(size/2, size/2, size/2);
                             bool inlist = false;
                             for(int l = 0; l < vertices.Count; l++)
                             {

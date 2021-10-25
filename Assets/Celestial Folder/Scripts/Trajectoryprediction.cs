@@ -11,6 +11,14 @@ public class Trajectoryprediction : MonoBehaviour
     public bool draw = false;
     public float timeStep = 0.01f;
 
+    void Start(){
+        Gravity[] gravityObjects = FindObjectsOfType<Gravity>();
+        foreach(Gravity gravityobject in gravityObjects){
+            LineRenderer lr = gravityobject.gameObject.GetComponent<LineRenderer>();
+            lr.enabled = false;
+            lr.positionCount = 0;
+        }
+    }
     void Update()
     {
         if(draw == true) {
@@ -57,14 +65,6 @@ public class Trajectoryprediction : MonoBehaviour
                     simulatedObject.lr.endColor = colour2;
                 }
             }
-            //If is not in editor mode, disable all linerenderer. Ineffective, does every frame when only need once in start.
-            else{
-                Gravity[] gravityObjects = FindObjectsOfType<Gravity>();
-                foreach(Gravity gravityobject in gravityObjects){
-                    LineRenderer lr = gravityobject.gameObject.GetComponent<LineRenderer>();
-                    lr.enabled = false;
-                    lr.positionCount = 0;
-                }}
         }
         //If draw is off then disable all linerenderers.
         else{
