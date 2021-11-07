@@ -18,7 +18,7 @@ public class Gravity : MonoBehaviour
         rb.AddTorque(transform.right * RotationalX);
         rb.mass = mass;
     }
-    public void FixedUpdate(){
+    virtual public void FixedUpdate(){
         foreach(Gravity attractor in gravityObjects){
             if(attractor != this){
                 Attract(attractor);

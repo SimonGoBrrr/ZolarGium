@@ -15,6 +15,44 @@ public class generation : MonoBehaviour
         float abc = ab + bc + ac + ba + cb + ca;
         return abc / 6f;
     }
+    public void generateVertexColoursForPlanet(Transform parentPlanetGameObject, Vector3 planetCentrePosition, float planetRadius, Gradient gradient){
+        List<GameObject> chunks = new List<GameObject>();
+        //Generate chunks list for one planet effectively. Kind of optimized.
+        foreach(Transform child in parentPlanetGameObject){
+            if(child.tag == "Chunk"){
+                chunks.Add(child.gameObject);
+            }
+        }
+        float mindistance = planetRadius;
+        float maxdistance = 0f;
+        //Foreach chunk object with selected parentPlanetGameObject, get all vertices save in list, then find top and lowest vertex positions. Gets the lowest and highest points in the planet.
+        foreach(GameObject chunk in chunks){
+            var meshFilter = chunk.GetComponent<MeshFilter>();
+            Vector3[] vertices = meshFilter.mesh.vertices;
+            foreach(Vector3 vertex in vertices){
+                float distanceFromPlanetCentre = Vector3.Distance(vertex, planetCentrePosition);
+                if(distanceFromPlanetCentre < mindistance){
+                    mindistance = distanceFromPlanetCentre;
+                }
+                if(distanceFromPlanetCentre > maxdistance){
+                    maxdistance = distanceFromPlanetCentre;
+                }
+            }
+        }
+        //Foreach chunk object with selected parentPlanetGameObject, get vertices, save chunk mesh colours.
+        foreach(GameObject chunk in chunks){
+            var meshFilter = chunk.GetComponent<MeshFilter>();
+            Vector3[] vertices = meshFilter.mesh.vertices;
+            Color[] colours = new Color[vertices.Length];
+            for(int i = 0; i < vertices.Length; i++){
+                float currentVertexDistance = Vector3.Distance(planetCentrePosition, vertices[i]);
+                float floatGradientValue = Mathf.InverseLerp(mindistance, maxdistance, currentVertexDistance);
+                colours[i] = gradient.Evaluate(floatGradientValue);
+            }
+            meshFilter.mesh.colors = colours;
+        }
+    }
+
     public float[,,] GenerateNoiseMap(int size, int numLayers, float noiseScale, float noiseHeightMultiplier, float seed){
         float[,,] noiseMap = new float[size+1,size+1,size+1];
         for(int x = 0; x < size+1; x++){
@@ -42,19 +80,19 @@ public class generation : MonoBehaviour
         return noiseMap;
     }
     //Go through each chunk in the planet, generate a new gameobject wiht custom name for that position
-    public void generateChunksWithMesh(int chunkSize, int numChunks, Transform celestialObjectParent, float surfaceLevel, float noiseScale, float noiseHeightMultiplier, float seed, int numLayers, float[,,] noiseMap){
+    public void generateChunksWithMesh(int chunkSize, int numChunks, Transform celestialObjectParent, float surfaceLevel, float noiseScale, float noiseHeightMultiplier, float seed, int numLayers, float[,,] noiseMap, Gradient gradient, Material mat){
         for(int x = 0; x < numChunks; x++){
             for(int y = 0; y < numChunks; y++){
                 for(int z = 0; z < numChunks; z++){
                     var currentChunk = new GameObject();
                     currentChunk.name = $"Chunk ({x+1}, {y+1}, {z+1})";
                     currentChunk.transform.SetParent(celestialObjectParent);
+                    currentChunk.tag = "Chunk";
                     var meshrenderer = currentChunk.AddComponent<MeshRenderer>();
                     var meshFilter = currentChunk.AddComponent<MeshFilter>();
                     var currentChunkPositionVector3Int = new Vector3Int(x*chunkSize,y*chunkSize,z*chunkSize);
-                    //Temporary material colour, standard magenta is too bland.
-                    meshrenderer.material.SetColor("_Color", new Color(1f,0.50f,0f));
-                    meshFilter.mesh = createChunkMesh(chunkSize, currentChunkPositionVector3Int, numChunks, surfaceLevel, seed, numLayers, noiseMap);
+                    meshrenderer.material = mat;
+                    meshFilter.mesh = createChunkMesh(chunkSize, currentChunkPositionVector3Int, numChunks, surfaceLevel, seed, numLayers, noiseMap, gradient);
                 }
             }
         }
@@ -83,11 +121,12 @@ public class generation : MonoBehaviour
         return index;
     }
 
-    public Mesh createChunkMesh(int chunkSize, Vector3Int currentChunk, int numChunks, float surfaceLevel, float seed, int numLayers, float[,,] noiseMap){
+    public Mesh createChunkMesh(int chunkSize, Vector3Int currentChunk, int numChunks, float surfaceLevel, float seed, int numLayers, float[,,] noiseMap, Gradient gradient){
         Mesh mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
+        //MARCHING CUBES.
         for(int x = 0; x < chunkSize; x++){
             for(int y = 0; y < chunkSize; y++){
                 for(int z = 0; z < chunkSize; z++){
@@ -134,6 +173,7 @@ public class generation : MonoBehaviour
                 }
             }
         }
+        //Set vertices & to mesh.
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals();
