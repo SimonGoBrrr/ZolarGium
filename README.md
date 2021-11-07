@@ -10,3 +10,4 @@ So.. yeah that is pretty much it. My game is not that exciting, it is more for m
 ## Thank you for your attention paid to this README. I never read them, lmao.
 ##   Sincerely, Simon Brown. A Norwegian 16 year old, who likes to code.
 P.S Fuck off stealing my code, my time was used developing this, not yours.
+Studying my code, and using it to develop your own is totally fine though.
