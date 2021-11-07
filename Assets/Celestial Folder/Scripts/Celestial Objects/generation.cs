@@ -109,7 +109,6 @@ public class generation : MonoBehaviour
                             if(rowIndex == -1){
                                 continue;
                             }
-                            //Add so that the vertices position's centre is at the gameobject's position. Fixes alot of furture problems.
                             Vector3Int vert1 = position + EdgeTable[rowIndex, 0];
                             Vector3Int vert2 = position + EdgeTable[rowIndex, 1];
                             //- new vector(totalsize/2, totalsize2 totalsize/2) to offset it to be in the centre of gameobject.

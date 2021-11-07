@@ -9,7 +9,7 @@ public class Trajectoryprediction : MonoBehaviour
     public float lineStartWidth = 0.5f;
     public float lineEndWidth = 0.3f;
     public bool draw = false;
-    public float timeStep = 0.01f;
+    public float timeStep = 0.02f;
 
     void Start(){
         Gravity[] gravityObjects = FindObjectsOfType<Gravity>();

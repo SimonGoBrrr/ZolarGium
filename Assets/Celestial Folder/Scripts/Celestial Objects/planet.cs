@@ -26,11 +26,8 @@ public class planet : generation
 
 
     void Start(){
-        var objectMesh = GetComponent<MeshFilter>();
-        //var meshCollider = GetComponent<MeshCollider>();
         float [,,] noiseMap = GenerateNoiseMap(chunkSize*numChunks, numLayers, noiseScale, noiseHeightMultiplier, seed);
         //Possibility to manipulate noiseMap here, to create craters, etcetera for moons.
-        //meshCollider.sharedMesh = marchMesh;
         generateChunksWithMesh(chunkSize, numChunks, this.gameObject.transform, surfaceLevel, noiseScale, noiseHeightMultiplier, seed, numLayers, noiseMap);
     }
 }
